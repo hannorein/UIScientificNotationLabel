@@ -7,7 +7,7 @@
 //
 
 #import "UIScientificNotationLabel.h"
-#ifdef DESKTOP
+#ifdnef TARGET_OS_IPHONE
 #import "NSString+Size.h"
 #endif
 
@@ -17,7 +17,7 @@
 -(id)initWithCoder:(NSCoder *)aDecoder{
 	if (self=[super initWithCoder:aDecoder]){
 		self.textAlignment		= NSTextAlignmentRight;
-#ifndef DESKTOP
+#ifdef TARGET_OS_IPHONE
 		self.contentMode		= UIViewContentModeRedraw;
 #endif
 		self.textColor			= [UIColor whiteColor];
@@ -28,7 +28,7 @@
 -(id)initWithFrame:(CGRect)frame{
 	if (self=[super initWithFrame:frame]){
 		self.textAlignment		= NSTextAlignmentRight; 
-#ifndef DESKTOP
+#ifdef TARGET_OS_IPHONE
 		self.backgroundColor	= [UIColor clearColor];
 		self.contentMode		= UIViewContentModeRedraw;
 #endif
@@ -82,7 +82,7 @@
 	
 	[dataString release];
 	dataString = [newText retain];
-#ifndef DESKTOP
+#ifdef TARGET_OS_IPHONE
 	[self setNeedsLayout];
 	[self setNeedsDisplay];
 #else
@@ -100,7 +100,7 @@
 -(void)setFloatE:(floate)value unit:(NSString *)unit{
 	[self setFloatE:value unit:unit hideErrors:NO];
 }
-#ifdef DESKTOP
+#ifdnef TARGET_OS_IPHONE
 -(void)layoutSublayersOfLayer:(CALayer *)layer{
 #else
 -(void)layoutSubviews{
@@ -144,7 +144,7 @@
 }
 
 -(void)drawRect:(CGRect)rect{
-#ifndef DESKTOP
+#ifdef TARGET_OS_IPHONE
 	float basePosY = (self.frame.size.height-largeFont.lineHeight)/2.;
 #else
     NSLayoutManager* lm = [[NSLayoutManager alloc] init];
@@ -155,7 +155,7 @@
 	float basePosYPlus = basePosY + largeFont.ascender -smallFont.ascender - largeFont.capHeight/1.7;
 	float basePosYMinus = basePosY + largeFont.ascender -smallFont.ascender + largeFont.capHeight/4. ;
     
-#ifndef DESKTOP
+#ifdef TARGET_OS_IPHONE
 	CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), textColor.CGColor);
 #endif
 	[unitString drawAtPoint:CGPointMake(unitPosX, basePosY) withFont:largeFont];
@@ -290,11 +290,11 @@
 			exp0String = nil;
 		}
 	}
-#ifndef DESKTOP
+#ifdef TARGET_OS_IPHONE
 	[self setNeedsLayout];
 	[self setNeedsDisplay];
 #else
-    [self setNeedsLayout:YES];
+	[self setNeedsLayout:YES];
 	[self setNeedsDisplay:YES];
 #endif
 }
