@@ -5,16 +5,18 @@ UIScientificNotationLabel is a subclass of UIView that allows you to display sci
 The implementation automatically determines the number of significant digits to be shown to the user.
 It can render  symmetric and asymmetric error-bars. 
 It also supports upper and lower limits. 
-The class uses a struct consisting of five floats:
+The class uses a struct consisting of five floats as an input.
+If the value for a field is not known, it should be set to `NAN`.
 
     typedef struct {
     	float value;		// The actual value (set to NAN when not known)
     	float error_minus;	// Lower error bar (set to NAN when not known)
     	float error_plus;	// Upper error bar (set to NAN when not known, can be the same as error_minus)
     	float lowerlimit;	// Lower limit (set to NAN when not known,)
-    	float upperlimit;	// Upper limit (set set to NAN when not known,)
+    	float upperlimit;	// Upper limit (set to NAN when not known,)
     } floate;
 
+Currently, the class only supports right alignment (because I didn't need left alignment). 
 
 I use the class in my Exoplanet App for iOS (https://itunes.apple.com/us/app/exoplanet/id327702034?mt=8). A screenshot is shown below. The numbers on the right are rendered with this class.
 
