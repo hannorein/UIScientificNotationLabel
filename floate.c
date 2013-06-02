@@ -10,3 +10,4 @@
 #include "floate.h"
 
 const floate feNAN = {.value=NAN, .error_minus=NAN, .error_plus=NAN,.upperlimit=NAN,.lowerlimit=NAN};
+const doublee deNAN = {.value=NAN, .error_minus=NAN, .error_plus=NAN,.upperlimit=NAN,.lowerlimit=NAN};

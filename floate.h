@@ -18,4 +18,14 @@ typedef struct {
 
 extern const floate feNAN;
 
+typedef struct {
+	double value;
+	double error_minus;
+	double error_plus;
+	double lowerlimit;
+	double upperlimit;
+} doublee;
+
+extern const doublee deNAN;
+
 #endif

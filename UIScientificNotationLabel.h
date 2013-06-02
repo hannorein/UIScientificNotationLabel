@@ -43,4 +43,7 @@
 -(void)setFloatE:(floate)floatE;
 -(void)setFloatE:(floate)value unit:(NSString*)unit; // Sets the value and the units of the label.
 -(void)setFloatE:(floate)value unit:(NSString*)unit hideErrors:(bool)showErrors;
+
+-(void)setDoubleE:(doublee)value unit:(NSString*)unit hideErrors:(bool)showErrors;
+
 @end

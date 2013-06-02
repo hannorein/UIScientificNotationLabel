@@ -167,6 +167,12 @@
 	[exp1String drawAtPoint:CGPointMake(exp1PosX, basePosY) withFont:largeFont];
 	[exp2String drawAtPoint:CGPointMake(exp2PosX, basePosYPlus) withFont:smallFont];
 }
+	
+-(void)setDoubleE:(doublee)value unit:(NSString *)unit hideErrors:(bool)hideErrors{
+	floate f = {.value = value.value, .upperlimit = value.upperlimit, .lowerlimit = value.lowerlimit, .error_plus = value.error_plus, .error_minus = value.error_minus};
+	[self setFloatE:f unit:unit hideErrors:hideErrors];
+}
+
 
 -(void)setFloatE:(floate)value unit:(NSString *)unit hideErrors:(bool)hideErrors{
 	bool isExp = YES;
