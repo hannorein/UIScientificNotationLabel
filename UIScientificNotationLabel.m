@@ -105,12 +105,18 @@
 #else
 -(void)layoutSubviews{
 #endif
-	float spaceWidth = [@" " sizeWithFont:largeFont].width;
-	
+	float spaceWidth = ceilf([@" " boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+												options:nil
+											 attributes:@{NSFontAttributeName: largeFont}
+												context:nil].size.width);
+
 	if (self.textAlignment==NSTextAlignmentRight) {
 		float posX = self.frame.size.width;
 		
-		float unitWidth			= [unitString sizeWithFont:largeFont].width;
+		float unitWidth			= ceilf([unitString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+												  options:nil
+											   attributes:@{NSFontAttributeName: largeFont}
+												  context:nil].size.width);
 		posX -= unitWidth;
 		unitPosX = posX;
 		
@@ -118,25 +124,46 @@
 			posX -= spaceWidth;
 		}
 		
-		float exp2width			= [exp2String sizeWithFont:smallFont].width;
+		float exp2width			= ceilf([exp2String boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+														   options:nil
+														attributes:@{NSFontAttributeName: smallFont}
+														   context:nil].size.width);
 		posX -= exp2width;
 		exp2PosX = posX;
 		
-		float exp1width			= [exp1String sizeWithFont:largeFont].width;
+		float exp1width			= ceilf([exp1String boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+														   options:nil
+														attributes:@{NSFontAttributeName: largeFont}
+														   context:nil].size.width);
 		posX -= exp1width;
 		exp1PosX = posX;
 		
-		float errorWidth		= [errorString sizeWithFont:largeFont].width;
-		float errorMinusWidth	= [errorMinusString sizeWithFont:smallFont].width;
-		float errorPlusWidth	= [errorPlusString sizeWithFont:smallFont].width;
+		float errorWidth		= ceilf([errorString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+															options:nil
+														 attributes:@{NSFontAttributeName: largeFont}
+															context:nil].size.width);
+		float errorMinusWidth	= ceilf([errorMinusString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+															   options:nil
+															attributes:@{NSFontAttributeName: smallFont}
+															   context:nil].size.width);
+		float errorPlusWidth	= ceilf([errorPlusString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+																   options:nil
+																attributes:@{NSFontAttributeName: smallFont}
+																   context:nil].size.width);
 		posX -= MAX(MAX(errorMinusWidth,errorPlusWidth),errorWidth);
 		errorPosX = posX;
 		
-		float dataWidth			= [dataString sizeWithFont:largeFont].width;
+		float dataWidth			= ceilf([dataString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+														   options:nil
+														attributes:@{NSFontAttributeName: largeFont}
+														   context:nil].size.width);
 		posX -= dataWidth;
 		dataPosX = posX;
 		
-		float exp0width = [exp0String sizeWithFont:largeFont].width;
+		float exp0width = ceilf([exp0String boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+														 options:nil
+													  attributes:@{NSFontAttributeName: largeFont}
+														 context:nil].size.width);
 		posX -= exp0width;
 		exp0PosX = posX;
 		
@@ -144,28 +171,21 @@
 }
 
 -(void)drawRect:(CGRect)rect{
-#if TARGET_OS_IPHONE
 	float basePosY = (self.frame.size.height-largeFont.lineHeight)/2.;
-#else
-    NSLayoutManager* lm = [[NSLayoutManager alloc] init];
-    float lineHeight = [lm defaultLineHeightForFont:largeFont];
-    [lm release];
-    float basePosY = (self.frame.size.height-lineHeight)/2.;
-#endif
 	float basePosYPlus = basePosY + largeFont.ascender -smallFont.ascender - largeFont.capHeight/1.7;
 	float basePosYMinus = basePosY + largeFont.ascender -smallFont.ascender + largeFont.capHeight/4. ;
     
-#if TARGET_OS_IPHONE
-	CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), textColor.CGColor);
-#endif
-	[unitString drawAtPoint:CGPointMake(unitPosX, basePosY) withFont:largeFont];
-	[dataString drawAtPoint:CGPointMake(dataPosX, basePosY) withFont:largeFont];
-	[errorString drawAtPoint:CGPointMake(errorPosX, basePosY) withFont:largeFont];
-	[errorPlusString drawAtPoint:CGPointMake(errorPosX, basePosYPlus) withFont:smallFont];
-	[errorMinusString drawAtPoint:CGPointMake(errorPosX, basePosYMinus) withFont:smallFont];
-	[exp0String drawAtPoint:CGPointMake(exp0PosX, basePosY) withFont:largeFont];
-	[exp1String drawAtPoint:CGPointMake(exp1PosX, basePosY) withFont:largeFont];
-	[exp2String drawAtPoint:CGPointMake(exp2PosX, basePosYPlus) withFont:smallFont];
+	NSDictionary *largeFontAttributes = @{NSFontAttributeName: largeFont, NSForegroundColorAttributeName: textColor};
+	NSDictionary *smallFontAttributes = @{NSFontAttributeName: smallFont, NSForegroundColorAttributeName: textColor};
+	
+	[unitString drawAtPoint:CGPointMake(unitPosX, basePosY)  withAttributes:largeFontAttributes];
+	[dataString drawAtPoint:CGPointMake(dataPosX, basePosY) withAttributes:largeFontAttributes];
+	[errorString drawAtPoint:CGPointMake(errorPosX, basePosY) withAttributes:largeFontAttributes];
+	[errorPlusString drawAtPoint:CGPointMake(errorPosX, basePosYPlus) withAttributes:smallFontAttributes];
+	[errorMinusString drawAtPoint:CGPointMake(errorPosX, basePosYMinus) withAttributes:smallFontAttributes];
+	[exp0String drawAtPoint:CGPointMake(exp0PosX, basePosY) withAttributes:largeFontAttributes];
+	[exp1String drawAtPoint:CGPointMake(exp1PosX, basePosY) withAttributes:largeFontAttributes];
+	[exp2String drawAtPoint:CGPointMake(exp2PosX, basePosYPlus) withAttributes:smallFontAttributes];
 }
 	
 -(void)setDoubleE:(doublee)value unit:(NSString *)unit hideErrors:(bool)hideErrors{

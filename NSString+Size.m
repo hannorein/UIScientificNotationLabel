@@ -12,7 +12,10 @@
 
 -(NSSize)sizeWithFont:(NSFont*)font{
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-    return [[[NSAttributedString alloc] initWithString:self attributes:attributes] size];
+    NSAttributedString* attribString = [[NSAttributedString alloc] initWithString:self attributes:attributes];
+    NSSize size = [attribString size];
+    [attribString release];
+    return size;
 }
 -(void)drawAtPoint:(CGPoint)point withFont:(NSFont*)font{
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, [NSColor whiteColor], NSForegroundColorAttributeName, nil];
