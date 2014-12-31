@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (Size)
--(NSSize)sizeWithFont:(NSFont*)font;
--(void)drawAtPoint:(CGPoint)point withFont:(NSFont*)font;
+-(float)widthWithFont:(UIFont*)font;
+
 @end

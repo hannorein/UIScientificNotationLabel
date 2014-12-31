@@ -10,15 +10,12 @@
 
 @implementation NSString (Size)
 
--(NSSize)sizeWithFont:(NSFont*)font{
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-    NSAttributedString* attribString = [[NSAttributedString alloc] initWithString:self attributes:attributes];
-    NSSize size = [attribString size];
-    [attribString release];
-    return size;
+
+-(float)widthWithFont:(UIFont *)font{
+	return ceilf([self boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+								   options:nil
+								attributes:@{NSFontAttributeName: font}
+								   context:nil].size.width);
 }
--(void)drawAtPoint:(CGPoint)point withFont:(NSFont*)font{
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, [NSColor whiteColor], NSForegroundColorAttributeName, nil];
-    [self drawAtPoint:point withAttributes:attributes];
-}
+
 @end

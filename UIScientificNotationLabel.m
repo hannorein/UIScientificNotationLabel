@@ -7,9 +7,7 @@
 //
 
 #import "UIScientificNotationLabel.h"
-#if !(TARGET_OS_IPHONE)
 #import "NSString+Size.h"
-#endif
 
 @implementation UIScientificNotationLabel
 @synthesize textColor;
@@ -105,18 +103,12 @@
 #else
 -(void)layoutSubviews{
 #endif
-	float spaceWidth = ceilf([@" " boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-												options:nil
-											 attributes:@{NSFontAttributeName: largeFont}
-												context:nil].size.width);
+	float spaceWidth = [@" " widthWithFont:largeFont];
 
 	if (self.textAlignment==NSTextAlignmentRight) {
 		float posX = self.frame.size.width;
 		
-		float unitWidth			= ceilf([unitString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-												  options:nil
-											   attributes:@{NSFontAttributeName: largeFont}
-												  context:nil].size.width);
+		float unitWidth			= [unitString widthWithFont:largeFont];
 		posX -= unitWidth;
 		unitPosX = posX;
 		
@@ -124,46 +116,26 @@
 			posX -= spaceWidth;
 		}
 		
-		float exp2width			= ceilf([exp2String boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-														   options:nil
-														attributes:@{NSFontAttributeName: smallFont}
-														   context:nil].size.width);
+		float exp2width			= [exp2String widthWithFont:smallFont];
 		posX -= exp2width;
 		exp2PosX = posX;
 		
-		float exp1width			= ceilf([exp1String boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-														   options:nil
-														attributes:@{NSFontAttributeName: largeFont}
-														   context:nil].size.width);
+		float exp1width			= [exp1String widthWithFont:largeFont];
 		posX -= exp1width;
 		exp1PosX = posX;
 		
-		float errorWidth		= ceilf([errorString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-															options:nil
-														 attributes:@{NSFontAttributeName: largeFont}
-															context:nil].size.width);
-		float errorMinusWidth	= ceilf([errorMinusString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-															   options:nil
-															attributes:@{NSFontAttributeName: smallFont}
-															   context:nil].size.width);
-		float errorPlusWidth	= ceilf([errorPlusString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-																   options:nil
-																attributes:@{NSFontAttributeName: smallFont}
-																   context:nil].size.width);
+		float errorWidth		= [errorString widthWithFont:largeFont];
+		float errorMinusWidth	= [errorMinusString widthWithFont:smallFont];
+		float errorPlusWidth	= [errorPlusString widthWithFont:largeFont];
+
 		posX -= MAX(MAX(errorMinusWidth,errorPlusWidth),errorWidth);
 		errorPosX = posX;
 		
-		float dataWidth			= ceilf([dataString boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-														   options:nil
-														attributes:@{NSFontAttributeName: largeFont}
-														   context:nil].size.width);
+		float dataWidth			= [dataString widthWithFont:largeFont];
 		posX -= dataWidth;
 		dataPosX = posX;
 		
-		float exp0width = ceilf([exp0String boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-														 options:nil
-													  attributes:@{NSFontAttributeName: largeFont}
-														 context:nil].size.width);
+		float exp0width			= [exp0String widthWithFont:largeFont];
 		posX -= exp0width;
 		exp0PosX = posX;
 		
