@@ -1,7 +1,7 @@
 UIScientificNotationLabel
 ==============
 
-UIScientificNotationLabel is a subclass of UIView that allows you to display scientific notations of very large/small numbers on iOS and MacOS X.
+UIScientificNotationLabel is a subclass of UIView that allows you to display scientific notations of very large/small numbers on iOS and MacOS X (the latest version does not work on MaxOS X, go back a few commits)).
 The implementation automatically determines the number of significant digits to be shown to the user.
 It can render  symmetric and asymmetric error-bars. 
 It also supports upper and lower limits. 
