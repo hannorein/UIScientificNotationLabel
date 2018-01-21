@@ -13,7 +13,7 @@
 
 -(float)widthWithFont:(UIFont *)font{
 	return ceilf([self boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
-								   options:nil
+								   options:NSStringDrawingUsesDeviceMetrics
 								attributes:@{NSFontAttributeName: font}
 								   context:nil].size.width);
 }
