@@ -15,28 +15,13 @@
 #endif
 #import "floate.h"
 
+//IB_DESIGNABLE
 @interface UIScientificNotationLabel : UIView{
-	UIFont* largeFont;
-	UIFont* smallFont;
 	
-	NSString*	exp0String;
-	float		exp0PosX;
-	NSString*	exp1String;
-	float		exp1PosX;
-	NSString*	exp2String;
-	float		exp2PosX;
-	NSString*	errorString;
-	float		errorPosX;
-	NSString*	errorMinusString;
-	NSString*	errorPlusString;
-	NSString*	dataString;
-	float		dataPosX;
-	NSString*	unitString;
-	float		unitPosX;
-	UIColor*	textColor;
 }
+
 @property(nonatomic) NSTextAlignment textAlignment; // Only right aligment is currently supported.
-@property(retain,nonatomic) UIColor* textColor;
+@property(strong,nonatomic) UIColor* textColor;
 -(void)setFontSize:(float)fs;
 -(void)setText:(NSString*)newText;	// Sets a simple text (without scientific notation)
 -(NSString*)getText;

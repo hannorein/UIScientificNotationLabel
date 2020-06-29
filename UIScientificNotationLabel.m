@@ -9,85 +9,68 @@
 #import "UIScientificNotationLabel.h"
 #import "NSString+Size.h"
 
+@interface UIScientificNotationLabel(){
+	UIFont* largeFont;
+	UIFont* smallFont;
+	
+	NSString*	exp0String;
+	NSString*	exp1String;
+	NSString*	exp2String;
+	NSString*	errorString;
+	NSString*	errorMinusString;
+	NSString*	errorPlusString;
+	NSString*	dataString;
+	NSString*	unitString;
+	UIColor*	textColor;
+}
+@end
+
 @implementation UIScientificNotationLabel
 @synthesize textColor;
+
 
 -(id)initWithCoder:(NSCoder *)aDecoder{
 	if (self=[super initWithCoder:aDecoder]){
 		self.textAlignment		= NSTextAlignmentRight;
-#if TARGET_OS_IPHONE
 		self.contentMode		= UIViewContentModeRedraw;
-#endif
 		self.textColor			= [UIColor whiteColor];
         [self setFontSize:11];
 	}
 	return self;
 }
+
 -(id)initWithFrame:(CGRect)frame{
 	if (self=[super initWithFrame:frame]){
 		self.textAlignment		= NSTextAlignmentRight; 
-#if TARGET_OS_IPHONE
 		self.backgroundColor	= [UIColor clearColor];
 		self.contentMode		= UIViewContentModeRedraw;
-#endif
 		self.textColor			= [UIColor whiteColor];
         [self setFontSize:17];
 	}
 	return self;
 }
 -(void)setFontSize:(float)fs{
-    [largeFont release];
-    [smallFont release];
-    largeFont = [[UIFont systemFontOfSize:fs] retain];
-    smallFont = [[UIFont systemFontOfSize:fs/1.7] retain];
+    largeFont = [UIFont systemFontOfSize:fs];
+    smallFont = [UIFont systemFontOfSize:fs/1.7];
 }
 
--(void)dealloc{
-	[unitString release];
-	[dataString release];
-	[errorString release];
-	[errorMinusString release];
-	[errorPlusString release];
-	[exp0String release];
-	[exp1String release];
-	[exp2String release];
-	[textColor release];
-    [largeFont release];
-    [smallFont release];
-	[super dealloc];
-}
 
 -(void)setTextColor:(UIColor *)newTextColor{
-	[textColor release];
-	textColor = [newTextColor retain];
+	textColor = newTextColor;
 }
 
 -(void)setText:(NSString *)newText{
-	[unitString release];
 	unitString = nil;
-	[errorString release];
 	errorString = nil;
-	[errorMinusString release];
 	errorMinusString = nil;
-	[errorPlusString release];
 	errorPlusString = nil;
-	[exp0String release];
 	exp0String = nil;
-	[exp1String release];
 	exp1String = nil;
-	[exp2String release];
 	exp2String = nil;
 	
-	[dataString release];
-	dataString = [newText retain];
-#if TARGET_OS_IPHONE
+	dataString = newText;
 	[self setNeedsLayout];
 	[self setNeedsDisplay];
-#else
-    [self setNeedsLayout:YES];
-    [self setNeedsDisplay:YES];
-#endif
-    
 }
 -(NSString*)getText{
 	return dataString;
@@ -98,51 +81,20 @@
 -(void)setFloatE:(floate)value unit:(NSString *)unit{
 	[self setFloatE:value unit:unit hideErrors:NO];
 }
-#if !(TARGET_OS_IPHONE)
--(void)layoutSublayersOfLayer:(CALayer *)layer{
-#else
--(void)layoutSubviews{
-#endif
-	float spaceWidth = [@" " widthWithFont:largeFont];
 
-	if (self.textAlignment==NSTextAlignmentRight) {
-		float posX = self.frame.size.width;
-		
-		float unitWidth			= [unitString widthWithFont:largeFont];
-		posX -= unitWidth;
-		unitPosX = posX;
-		
-		if (unitWidth>0){
-			posX -= spaceWidth;
-		}
-		
-		float exp2width			= [exp2String widthWithFont:smallFont];
-		posX -= exp2width;
-		exp2PosX = posX;
-		
-		float exp1width			= [exp1String widthWithFont:largeFont];
-		posX -= exp1width;
-		exp1PosX = posX;
-		
-		float errorWidth		= [errorString widthWithFont:largeFont];
-		float errorMinusWidth	= [errorMinusString widthWithFont:smallFont];
-		float errorPlusWidth	= [errorPlusString widthWithFont:largeFont];
-
-		posX -= MAX(MAX(errorMinusWidth,errorPlusWidth),errorWidth);
-		errorPosX = posX;
-		
-		float dataWidth			= [dataString widthWithFont:largeFont];
-		posX -= dataWidth;
-		dataPosX = posX;
-		
-		float exp0width			= [exp0String widthWithFont:largeFont];
-		posX -= exp0width;
-		exp0PosX = posX;
-		
-	}
+-(float)drawString:(NSString*)string atPoint:(CGPoint)point withAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes{
+	CGRect br = [string boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)
+								   options:NSStringDrawingUsesDeviceMetrics
+								attributes:attributes
+								   context:nil];
+	float width = ceilf(br.size.width);
+	[string drawAtPoint:CGPointMake(point.x-width, point.y)  withAttributes:attributes];
+	return width;
 }
 
 -(void)drawRect:(CGRect)rect{
+	float spaceWidth = [@"a b" widthWithFont:largeFont]-[@"ab" widthWithFont:largeFont];
+	
 	float basePosY = (self.frame.size.height-largeFont.lineHeight)/2.;
 	float basePosYPlus = basePosY + largeFont.ascender -smallFont.ascender - largeFont.capHeight/1.7;
 	float basePosYMinus = basePosY + largeFont.ascender -smallFont.ascender + largeFont.capHeight/4. ;
@@ -150,14 +102,40 @@
 	NSDictionary *largeFontAttributes = @{NSFontAttributeName: largeFont, NSForegroundColorAttributeName: textColor};
 	NSDictionary *smallFontAttributes = @{NSFontAttributeName: smallFont, NSForegroundColorAttributeName: textColor};
 	
-	[unitString drawAtPoint:CGPointMake(unitPosX, basePosY)  withAttributes:largeFontAttributes];
-	[dataString drawAtPoint:CGPointMake(dataPosX, basePosY) withAttributes:largeFontAttributes];
-	[errorString drawAtPoint:CGPointMake(errorPosX, basePosY) withAttributes:largeFontAttributes];
-	[errorPlusString drawAtPoint:CGPointMake(errorPosX, basePosYPlus) withAttributes:smallFontAttributes];
-	[errorMinusString drawAtPoint:CGPointMake(errorPosX, basePosYMinus) withAttributes:smallFontAttributes];
-	[exp0String drawAtPoint:CGPointMake(exp0PosX, basePosY) withAttributes:largeFontAttributes];
-	[exp1String drawAtPoint:CGPointMake(exp1PosX, basePosY) withAttributes:largeFontAttributes];
-	[exp2String drawAtPoint:CGPointMake(exp2PosX, basePosYPlus) withAttributes:smallFontAttributes];
+	float currentx = self.frame.size.width-1; // -1 to avoid clipping (or could change ceil to floor in first call)
+	if ([unitString length]){
+		currentx -= [self drawString:unitString atPoint:CGPointMake(currentx, basePosY) withAttributes:largeFontAttributes];
+		currentx -= spaceWidth;
+	}
+	if ([exp2String length]){
+		currentx -= [self drawString:exp2String atPoint:CGPointMake(currentx, basePosYPlus) withAttributes:smallFontAttributes];
+		currentx -= spaceWidth*0.15; // just a little more space for appearance
+	}
+	if ([exp1String length]){
+		currentx -= [self drawString:exp1String atPoint:CGPointMake(currentx, basePosY) withAttributes:largeFontAttributes];
+		currentx -= spaceWidth;
+	}
+	if ([errorString length]){
+		currentx -= [self drawString:errorString atPoint:CGPointMake(currentx, basePosY) withAttributes:largeFontAttributes];
+	}else{
+		float exp_width = 0;
+		if ([errorPlusString length]){
+			exp_width = MAX(exp_width,[self drawString:errorPlusString atPoint:CGPointMake(currentx, basePosYPlus) withAttributes:smallFontAttributes]);
+		}
+		if ([errorMinusString length]){
+			exp_width = MAX(exp_width,[self drawString:errorMinusString atPoint:CGPointMake(currentx, basePosYMinus) withAttributes:smallFontAttributes]);
+		}
+		if (exp_width>0.){
+			currentx -= exp_width;
+			currentx -= spaceWidth*0.25; // just a little more space for appearance
+		}
+	}
+	if ([dataString length]){
+		currentx -= [self drawString:dataString atPoint:CGPointMake(currentx, basePosY) withAttributes:largeFontAttributes];
+	}
+	if ([exp0String length]){
+		currentx -= [self drawString:exp0String atPoint:CGPointMake(currentx, basePosY) withAttributes:largeFontAttributes];
+	}
 }
 	
 -(void)setDoubleE:(doublee)value unit:(NSString *)unit hideErrors:(bool)hideErrors{
@@ -217,84 +195,61 @@
 	NSString* formatString = [NSString stringWithFormat:@"%%.%df",significantdigits];
 
 	if (!isnan(value.value)){
-		dataString = [[NSString localizedStringWithFormat:formatString, value.value] retain];
+		dataString = [NSString localizedStringWithFormat:formatString, value.value];
 	}else{
 		if (!isnan(value.lowerlimit)){
-			dataString = [[NSString localizedStringWithFormat:[NSString stringWithFormat:@"> %@",formatString], value.lowerlimit] retain];
+			dataString = [NSString localizedStringWithFormat:[NSString stringWithFormat:@"> %@",formatString], value.lowerlimit];
 		}else if (!isnan(value.upperlimit)){
-			dataString = [[NSString localizedStringWithFormat:[NSString stringWithFormat:@"< %@",formatString], value.upperlimit] retain];
+			dataString = [NSString localizedStringWithFormat:[NSString stringWithFormat:@"< %@",formatString], value.upperlimit];
 		}
 	}
 	
 	if (self.textAlignment==NSTextAlignmentRight) {
-
-		[unitString release];
-		if (unit){
-			unitString = [unit retain];
-		}else{
-			unitString = nil;
-		}
-		
-		[exp1String release];
-		[exp2String release];
+		unitString = unit;
 		if (isExp){
-			exp2String = [[NSString stringWithFormat:@"%d",exponent] retain];
+			exp2String = [NSString stringWithFormat:@"%d",exponent];
 			if (hasErrors){
-				exp1String = [@" )⋅10" retain];
+				exp1String = @")⋅10";
 			}else{
-				exp1String = [@" ⋅10" retain];
+				exp1String = @"⋅10";
 			}
 		}else{
 			exp1String = nil;
 			exp2String = nil;
 		}
 
-		[errorMinusString release];
-		[errorPlusString release];
 		if (hasErrors){
 			if (!isnan(value.error_minus)){
-				errorMinusString = [[NSString localizedStringWithFormat:[NSString stringWithFormat:@"−%@",formatString],value.error_minus] retain];
+				errorMinusString = [NSString localizedStringWithFormat:[NSString stringWithFormat:@"−%@",formatString],value.error_minus];
 			}else{
 				errorMinusString = nil;
 			}
 			if (!isnan(value.error_plus)){
-				errorPlusString = [[NSString localizedStringWithFormat:[NSString stringWithFormat:@"+%@",formatString],value.error_plus] retain];
+				errorPlusString = [NSString localizedStringWithFormat:[NSString stringWithFormat:@"+%@",formatString],value.error_plus];
 			}else{
 				errorPlusString = nil;
 			}
 			if (!isnan(value.error_minus)&&!isnan(value.error_minus)
 				&& [[errorMinusString substringFromIndex:1] isEqualToString:[errorPlusString substringFromIndex:1]]){
-				[errorString release];
-				errorString = [[NSString localizedStringWithFormat:[NSString stringWithFormat:@"± %@",formatString],value.error_plus] retain];
-				[errorMinusString release];
+				errorString = [NSString localizedStringWithFormat:[NSString stringWithFormat:@"± %@",formatString],value.error_plus];
 				errorMinusString = nil;
-				[errorPlusString release];
 				errorPlusString = nil;
 			}else{
-				[errorString release];
 				errorString = nil;
 			}
-			
 		}else{
 			errorString			= nil;
 			errorMinusString	= nil;
 			errorPlusString		= nil;
 		}
-
-		[exp0String release];
 		if (isExp && hasErrors){
-			exp0String = [@"( " retain];
+			exp0String = @"( ";
 		}else{
 			exp0String = nil;
 		}
 	}
-#if TARGET_OS_IPHONE
 	[self setNeedsLayout];
 	[self setNeedsDisplay];
-#else
-	[self setNeedsLayout:YES];
-	[self setNeedsDisplay:YES];
-#endif
 }
 
 
