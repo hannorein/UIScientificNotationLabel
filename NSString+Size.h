@@ -5,8 +5,8 @@
 //  Created by Hanno Rein on 5/13/13.
 //  Copyright (c) 2013 Hanno Rein. All rights reserved.
 //
-
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface NSString (Size)
 -(float)widthWithFont:(UIFont*)font;
